@@ -2,7 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
-import { host, port, secret } from './config.mjs';
+import { host, port, secret, uploadDir } from './config.mjs';
 
 import files from './controllers/files.mjs';
 
@@ -29,6 +29,8 @@ app.use('*', (req, res, next) => {
   };
   next();
 });
+
+app.use('/static', express.static(uploadDir));
 app.use('/', files);
 
 app.listen(port, () => {
