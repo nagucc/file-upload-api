@@ -1,4 +1,4 @@
-// import fs from 'fs';
+import fs from 'fs';
 import expressJwt from 'express-jwt';
 import express from 'express';
 import multer from 'multer';
@@ -7,24 +7,18 @@ import uuid from 'uuid/v4';
 import { secret, uploadDir } from '../config.mjs';
 import { getToken } from '../utils.mjs';
 
-
-// const { Router } = require('express');
-// const multer = require('multer');
-// const uuid = require('uuid/v4'); // 使用v4生成uuid
-
-
 // 确保upload和jkef目录存在
-// try {
-//   fs.accessSync('upload');
-// } catch (e) {
-//   fs.mkdirSync('upload');
-// }
+const dirs = uploadDir.split('/');
+dirs.forEach((dir, i) => {
+  const path = dirs.slice(0, i + 1).join('/');
+  if (!path) return;
+  try {
+    fs.accessSync(path);
+  } catch (e) {
+    fs.mkdirSync(path);
+  }
+});
 
-// try {
-//   fs.accessSync('upload/jkef');
-// } catch (e) {
-//   fs.mkdirSync('upload/jkef');
-// }
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -32,7 +26,6 @@ const storage = multer.diskStorage({
   },
   filename(req, file, cb) {
     const extName = file.originalname.split('.').reverse()[0];
-    console.log(`${uuid()}.${extName}`);
     cb(null, `${uuid()}.${extName}`);
   },
 });
